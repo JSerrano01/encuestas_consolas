@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <link rel="shortcut icon" href="/static/Escudo_Colmayor.png"/>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/estilo.css')}}">
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+    <!-- DataTables Spanish language file -->
+    <script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/plug-ins/1.11.5/i18n/Spanish.json"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable({
+                "order": [[0, "desc"]],  // Ordena por la primera columna (FECHA) de forma descendente al cargar la página
+                "paging": true,           // Habilita la paginación
+                "searching": true,        // Habilita la barra de búsqueda
+                "info": true              // Muestra información sobre la cantidad de registros
+                // Puedes agregar más opciones aquí
+            });
+        });
+    </script>
+
+</head>
+
+<body>
+    <div class="container"
+        style="background-color: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); padding: 30px;">
+        <div class="col-md-12">
+            <h2 style='color:#108181;'><b>REGISTRO COMPLETO DE BASE DE DATOS</b></h2>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h2 style='color:#108181;'>Registros Encuestas:</h2>
+            </div>
+            <div>
+                <table id="myTable" class="display">
+                    <thead>
+                        <tr>
+                            <td>FECHA</td>
+                            <td>AMABILIDAD</td>
+                            <td>PUNTUALIDAD</td>
+                            <td>EFECTIVIDAD</td>
+                            <td>DEPENDENCIA</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fila in resultados %}
+                        <tr>
+                            <td>{{ fila[1] }}</td>
+                            <td>{{ fila[2] }}</td>
+                            <td>{{ fila[3] }}</td>
+                            <td>{{ fila[4] }}</td>
+                            <td>{{ fila[5] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="container"
+        style="background-color: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); padding: 30px;">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 style='color:#108181;'><b>Resultados:</b></h2>
+                {% if promedio_total %}
+                <p><b>NOTA TOTAL:</b> {{ promedio_total }}</p>
+                {% else %}
+                <p>No hay datos para calcular el promedio.</p>
+                {% endif %}
+                <p><b>Valoracion Notas:</b></p>
+                <p>EXCELENTE = 5</p>
+                <p>BUENO = 4</p>
+                <p>REGULAR = 3</p>
+                <p>DEFICIENTE = 2</p>
+                <p>MALO = 1</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <h3 style='color:#108181;'>Cantidad de Valores:</h3>
+                {% if cantidad_valores %}
+                <table class="table">
+                    <tr>
+                        <th></th>
+                        <th>Excelente</th>
+                        <th>Bueno</th>
+                        <th>Regular</th>
+                        <th>Deficiente</th>
+                        <th>Malo</th>
+                        <th>Cantidad Respuestas</th>
+                    </tr>
+                    <tr>
+                        <td>AMABILIDAD</td>
+                        <td>{{ cantidad_valores[0] }}</td>
+                        <td>{{ cantidad_valores[1] }}</td>
+                        <td>{{ cantidad_valores[2] }}</td>
+                        <td>{{ cantidad_valores[3] }}</td>
+                        <td>{{ cantidad_valores[4] }}</td>
+                        <td>{{cantidad_valores[15]}}</td>
+                    </tr>
+                    <tr>
+                        <td>PUNTUALIDAD</td>
+                        <td>{{ cantidad_valores[5] }}</td>
+                        <td>{{ cantidad_valores[6] }}</td>
+                        <td>{{ cantidad_valores[7] }}</td>
+                        <td>{{ cantidad_valores[8] }}</td>
+                        <td>{{ cantidad_valores[9] }}</td>
+                        <td>{{cantidad_valores[16]}}</td>
+                    </tr>
+                    <tr>
+                        <td>EFECTIVIDAD</td>
+                        <td>{{ cantidad_valores[10] }}</td>
+                        <td>{{ cantidad_valores[11] }}</td>
+                        <td>{{ cantidad_valores[12] }}</td>
+                        <td>{{ cantidad_valores[13] }}</td>
+                        <td>{{ cantidad_valores[14] }}</td>
+                        <td>{{cantidad_valores[17]}}</td>
+                    </tr>
+                    <tr>
+                        <th>TOTAL</th>
+                        <td>{{ cantidad_valores[18] }}</td>
+                        <td>{{ cantidad_valores[19] }}</td>
+                        <td>{{ cantidad_valores[20] }}</td>
+                        <td>{{ cantidad_valores[21] }}</td>
+                        <td>{{ cantidad_valores[22] }}</td>
+                        <td>{{ cantidad_valores[15] + cantidad_valores[16] + cantidad_valores[17] }}</td>
+                    </tr>
+                    <tr>
+                        <th>PROMEDIOS</th>
+                        <td>{{ (cantidad_valores[18] / (cantidad_valores[15] + cantidad_valores[16] +
+                            cantidad_valores[17] + cantidad_valores[22]) * 100)|round(2) }} %</td>
+                        <td>{{ (cantidad_valores[19] / (cantidad_valores[15] + cantidad_valores[16] +
+                            cantidad_valores[17] + cantidad_valores[22]) * 100)|round(2) }} %</td>
+                        <td>{{ (cantidad_valores[20] / (cantidad_valores[15] + cantidad_valores[16] +
+                            cantidad_valores[17] + cantidad_valores[22]) * 100)|round(2) }} %</td>
+                        <td>{{ (cantidad_valores[21] / (cantidad_valores[15] + cantidad_valores[16] +
+                            cantidad_valores[17] + cantidad_valores[22]) * 100)|round(2) }} %</td>
+                        <td>{{ (cantidad_valores[22] / (cantidad_valores[15] + cantidad_valores[16] +
+                            cantidad_valores[17] + cantidad_valores[22]) * 100)|round(2) }} %</td>
+                        <td>{{ ((cantidad_valores[15] + cantidad_valores[16] + cantidad_valores[17] +
+                            cantidad_valores[22]) / (cantidad_valores[15] + cantidad_valores[16] + cantidad_valores[17]
+                            + cantidad_valores[22]) * 100)|round(2) }} %</td>
+                    </tr>
+                </table>
+                {% else %}
+                <p>No hay datos de cantidad de valores.</p>
+                {% endif %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- Contenedor de la primera gráfica -->
+                        {% if img_str %}
+                        <img src="data:image/png;base64,{{ img_str }}" alt="Gráfica 1">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <!-- Contenedor de la segunda gráfica -->
+                        {% if img_por_str %}
+                        <img src="data:image/png;base64,{{ img_por_str }}" alt="Gráfica 2">
+                        {% endif %}
+                    </div>
+                </div>
+                <br>
+                <br>
+                <br>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{{url_for("index")}}" class="btn btn-primary custom-button" style="background-color: #108181;
+                                    color: white;
+                                    box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+                                    border-radius: 40px 5px;
+                                    padding: 8px 20px;
+                                    margin-left: 1px;
+                                    height: 40px; /* Altura deseada */
+                                    width: 200px; /* Ancho deseado */
+                                    border: none;"><b>REGRESAR</b></a>
+                    </div>
+                    <div class="col-md-6 text-md-right">
+                        <form action="/completa/export_excel" method="post">
+                            <input type="hidden" name="resultados" value="{{ resultados }}">
+                            <input type="hidden" name="promedio_total" value="{{ promedio_total }}">
+                            <input type="hidden" name="cantidad_valores" value="{{ cantidad_valores }}">
+                            <button type="submit" class="btn btn-primary" style=" background-color: #108181;
+                            left: 400px; 
+                            color: white;
+                            box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+                            border-radius: 40px 5px;
+                            padding: 8px 20px;
+                            margin-left: 300px;
+                            height: 40px; /* Altura deseada */
+                            width: 200px; /* Ancho deseado */">GENERAR EXCEL</button>
+                        </form>
+                    </div>
+                </div>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="shortcut icon" href="#" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/css/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/estilos.css">
+    <link rel="stylesheet" href="/static/css/plugins/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/fuentes/iconic/css/material-design-iconic-font.min.css">
+    <link rel="shortcut icon" href="/static/Escudo_Colmayor.png"/>
+    <title>Generador de Informe</title>
+</head>
+
+<body>
+    <div class="container-login">
+        <div class="wrap-login">
+            <form class="login-form validate-form" action="/por_dependencia_fechas" method="post" enctype="multipart/form-data">
+                <span class="login-form-title">Generador Informe Por Dependencia</span>
+                <br>
+                <label for="dependencia"><b>Seleccionar Dependencia:</b></label>
+                <br>
+                <select name="dependencia" id="dependencia" required>
+                    <option value="ADMISIONES, REGISTRO Y CONTROL">ADMISIONES, REGISTRO Y CONTROL</option>
+                    <option value="ATENCIÓN AL CIUDADANO">ATENCIÓN AL CIUDADANO</option>
+                    <option value="BIBLIOTECA">BIBLIOTECA</option>
+                    <option value="BIENESTAR INSTITUCIONAL">BIENESTAR INSTITUCIONAL</option>
+                    <option value="FABLAB">FABLAB</option>
+                    <option value="FACULTAD DE ADMINISTRACIÓN">FACULTAD DE ADMINISTRACIÓN</option>
+                    <option value="FACULTAD DE ARQUITECTURA E INGENIERÍA">FACULTAD DE ARQUITECTURA E INGENIERÍA</option>
+                    <option value="FACULTAD DE CIENCIAS DE LA SALUD">FACULTAD DE CIENCIAS DE LA SALUD</option>
+                    <option value="FACULTAD DE CIENCIAS SOCIALES Y EDUCACIÓN">FACULTAD DE CIENCIAS SOCIALES Y EDUCACIÓN</option>
+                    <option value="GESTIÓN DOCUMENTAL">GESTIÓN DOCUMENTAL</option>
+                    <option value="MEDIOS AUDIOVISUALES">MEDIOS AUDIOVISUALES</option>
+                    <option value="QUÉDATE EN COLMAYOR">QUÉDATE EN COLMAYOR</option>
+                </select>
+                <br>
+                <br>
+                <p><b>Seleccione Rango de Fecha del Informe:</b></p>
+                <label for="fecha_inicio">Fecha de Inicio:</label>
+                <input type="date" name="fecha_inicio" id="start_date" placeholder="YYYY-MM-DD required pattern="\d{4}-\d{2}-\d{2}" required>
+                <br>
+                <br>
+                <label for="fecha_fin">Fecha de Fin:</label>
+                <input type="date" name="fecha_fin" id="end_date" placeholder="YYYY-MM-DD" required>
+                <br>
+                <br>
+                <div class="container-login-form-btn">
+                    <div class="wrap-login-form-btn">
+                        <div class="login-form-bgbtn"></div>
+                        <button class="login-form-btn" type="submit">GENERAR</button>
+                    </div>
+                </div>
+                <br>
+                <div class="form-group" style="width: 100%; height: 100%;">
+                    <a href="{{url_for("index")}}" class="btn btn-primary custom-button" style="
+                    background-color: #cb7204;
+                    color: white;
+                    box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+                    border-radius: 40px 5px;
+                    padding: 8px 20px;
+                    border: none;
+                    /* margin-right: 50px; */
+                    margin-left:100px;
+                    height: 50px; /* Altura deseada */
+                    width: 240px; /* Ancho deseado */
+                "><b>REGRESAR</b></a>
+
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

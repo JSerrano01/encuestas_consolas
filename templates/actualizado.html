@@ -1,0 +1,79 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="shortcut icon" href="#" />
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="/static/css/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/estilos.css">
+    <link rel="stylesheet" href="/static/css/plugins/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/fuentes/iconic/css/material-design-iconic-font.min.css">
+    <link rel="shortcut icon" href="/static/Escudo_Colmayor.png"/>
+    <title>Generador de Informe</title>
+</head>
+
+<body>
+    <div class="container-login">
+        <div class="wrap-login">
+            <form class="login-form validate-form" action="/actualizar" method="post" enctype="multipart/form-data">
+                <span class="login-form-title">BASE DE DATOS ACTUALIZADA CORRECTAMENTE</span>
+                <!-- <br>
+                <div class="container-login-form-btn">
+                    <div class="wrap-login-form-btn">
+                        <div class="login-form-bgbtn"></div>
+                        <button class="login-form-btn" type="submit">Actualizar</button>
+                    </div>
+                </div> -->
+
+            </form>
+            <!-- <form action="/completa" method="post">
+                <div class="container-login-form-btn">
+                    <div class="wrap-login-form-btn">
+                        <div class="login-form-bgbtn"></div>
+                        <button class="login-form-btn" type="submit">Generar Por Dependencia</button>
+                    </div>
+                </div>
+            </form> -->
+            <br>
+            <div class="form-group" style="width: 100%; height: 100%;">
+                <a href="{{url_for("index")}}" class="btn btn-primary custom-button" style="
+                background-color: #cb7204;
+                color: white;
+                box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+                border-radius: 40px 5px;
+                padding: 8px 20px;
+                border: none;
+                /* margin-right: 50px; */
+                margin-left:100px;
+                height: 50px; /* Altura deseada */
+                width: 240px; /* Ancho deseado */
+            "><b>REGRESAR</b></a>
+
+
+                <!-- <a href="{{url_for("actualizar")}}" class="btn btn-primary custom-button" style="background-color: #cb7204;
+                color: white;
+                box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+                border-radius: 40px 5px;
+                padding: 8px 20px;
+                margin-left: 1px;
+                height: 70px; /* Altura deseada */
+                width: 200px; /* Ancho deseado */
+                     border: none;"><b>GENERAR POR DEPENDENCIA</b></a>
+            </div> -->
+
+            <!-- <form action="/completa" method="post">
+                <div class="container-login-form-btn">
+                    <div class="wrap-login-form-btn">
+                        <div class="login-form-bgbtn"></div>
+                        <button class="login-form-btn" type="submit">Generar Todas Las Dependencias</button>
+                    </div>
+                </div>
+            </form> -->
+        </div>
+    </div>
+</body>
+
+</html>
