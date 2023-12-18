@@ -7,18 +7,18 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="/static/css/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/estilos.css">
-    <link rel="stylesheet" href="/static/css/plugins/sweetalert2/sweetalert2.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/css/fuentes/iconic/css/material-design-iconic-font.min.css">
-    <link rel="shortcut icon" href="/static/Escudo_Colmayor.png"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/sweetalert2/sweetalert2.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fuentes/iconic/css/material-design-iconic-font.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='Escudo_Colmayor.png') }}"/>
     <title>Generador de Informe</title>
 </head>
 
 <body>
     <div class="container-login">
         <div class="wrap-login">
-            <form class="login-form validate-form" action="/actualizar" method="post" enctype="multipart/form-data">
+            <form class="login-form validate-form" action="{{ url_for('actualizar') }}" method="post" enctype="multipart/form-data">
                 <span class="login-form-title">Generador Informe Consolas Encuestas</span>
                 <br>
                 <!-- <br>
@@ -107,7 +107,7 @@
                      border: none;"><b>GENERAR POR DEPENDENCIA</b></a>
             </div>
 
-            <form action="/completa" method="post">
+            <form action="{{ url_for('mostrar_completa') }}" method="post">
                 <div class="container-login-form-btn">
                     <div class="wrap-login-form-btn">
                         <div class="login-form-bgbtn"></div>

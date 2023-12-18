@@ -5,13 +5,33 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/static/Escudo_Colmayor.png"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/sweetalert2/sweetalert2.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fuentes/iconic/css/material-design-iconic-font.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='Escudo_Colmayor.png') }}"/>
     <title>Error</title>
 </head>
 
 <body>
     <h1>Error</h1>
     <p>{{ error }}</p>
+
+    <br>
+    <div class="form-group" style="width: 100%; height: 100%;">
+        <a href="{{url_for("index")}}" class="btn btn-primary custom-button" style="
+        background-color: #cb7204;
+        color: white;
+        /* box-shadow: 0 1px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 40px 5px;
+        padding: 8px 20px;
+        border: none; */
+        /* margin-right: 50px; */
+        /* margin-left:100px; */
+        height: auto; /* Altura deseada */
+        width: 240px; /* Ancho deseado */
+    "><b>REGRESAR</b></a>
+
 </body>
 
 </html>

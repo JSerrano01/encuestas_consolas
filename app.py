@@ -9,19 +9,22 @@ import base64
 import pandas as pd
 import openpyxl
 from decimal import Decimal
+import os
 
 
 app = Flask(__name__)
+
+# Obtén la ruta del directorio actual del script
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 # -------------------------------------------------------------------RUTAS DE VISTAS SIMPLES---------------------------------------------------------------------------------------------------------
 # Ruta al Index
 @app.route("/")
 def index():
-    
     try:
         connection = conectar_base_datos()
-        
+
         cursor = connection.cursor()
 
         # Realizar la consulta con límite y desplazamiento para la paginación
@@ -36,14 +39,13 @@ def index():
             fecha = None
 
         return render_template("index.html", resultados=fecha)
-    
+
     except Exception as e:
         # Manejo de la excepción
         raise e
     finally:
         # Cerrar la conexión
         connection.close()
-    
 
 
 # Ruta a la vista generar todas las dependencias
@@ -57,25 +59,37 @@ def generar_todas():
 def generar_por_dependencia():
     return render_template("generar_por_dependencia.html")
 
-#-------------------------------------------------------------------------------------CONEXION BASE DE DATOS------------------------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------------------CONEXION BASE DE DATOS------------------------------------------------------------------------------------------
+
 
 def conectar_base_datos():
-    # Configurar la conexión a la base de datos
-    db_host = "localhost"
-    db_user = "root"
-    db_password = ""
-    db_name = "encuestas_consolas"
-
-    # Intentar establecer la conexión
     try:
+        if os.getenv("ENV") == "PROD":
+            # Configurar la conexión a la base de datos (segunda opción)
+            db_host = os.getenv("DDBB_HOST")
+            db_user = os.getenv("DDBB_USER")
+            db_password = os.getenv("DDBB_PASSWORD")
+
+        else:
+            # Configurar la conexión a la base de datos
+            db_host = "localhost"
+            db_user = "root"
+            db_password = ""
+
+        # Intentar establecer la conexión
+        db_name = "encuestas_consolas"
+
         connection = pymysql.connect(
             host=db_host, user=db_user, password=db_password, database=db_name
         )
         print("Conexión exitosa a la base de datos")
         return connection
+
     except pymysql.Error as e:
         print(f"Error al conectar a la base de datos: {e}")
         return None
+
 
 # -------------------------------------------------------------------FUNCIONES A RUTAS-----------------------------------------------------------------------------------------------------------------
 
@@ -94,7 +108,7 @@ def mostrar_completa():
         # Obtener el número total de registros en la base de datos
         connection = conectar_base_datos()
         cursor = connection.cursor()
-        
+
         # Consulta SQL para obtener el promedio_total
         cursor.execute(
             """
@@ -224,6 +238,7 @@ def consultar_datos_completo():
         # Cerrar la conexión
         connection.close()
 
+
 # --------------------------------------------------------------------------------------GENERADOR DE TODAS LAS DEPENDENCIAS CON FECHAS----------------------------------------------------------------------------
 
 
@@ -233,6 +248,11 @@ def completa_fechas():
         # Obtener los valores de fecha_inicio y fecha_fin del formulario
         fecha_inicio = request.form.get("fecha_inicio")
         fecha_fin = request.form.get("fecha_fin")
+
+        # Verificar si los valores son None
+        if fecha_inicio is None or fecha_fin is None:
+            # Manejar el caso en el que uno o ambos valores son None
+            return render_template("error.html", error="Las fechas no pueden ser nulas")
 
         # Convertir las fechas al formato deseado (de 'YYYY-MM-DD' a 'DD/MM/YYYY')
         fecha_inicio_obj = datetime.strptime(fecha_inicio, "%Y-%m-%d")
@@ -291,6 +311,12 @@ def completa_fechas():
 
         resultado = cursor.fetchone()
         promedio_total = resultado[0] if resultado else None
+
+        if promedio_total is None:
+            # Si el resultado es None, mostrar un mensaje de error
+            raise Exception(
+                "No se encuentran registros para las fechas proporcionadas."
+            )
         # print(f'Promedio total: {promedio_total}')
 
         # Consulta SQL para obtener la cantidad de valores con parámetros
@@ -345,6 +371,12 @@ def completa_fechas():
         cantidad_valores = cursor.fetchall()
 
         cantidad_valores = cantidad_valores[0]
+
+        if cantidad_valores is None:
+            # Si el resultado es None, mostrar un mensaje de error
+            raise Exception(
+                "No se encuentran registros para las fechas proporcionadas."
+            )
         # print(cantidad_valores)
 
         connection.close()
@@ -459,6 +491,13 @@ def por_dependencia_fechas():
 
         resultado = cursor.fetchone()
         promedio_total = resultado[0] if resultado else None
+
+        if promedio_total is None:
+            # Si el resultado es None, mostrar un mensaje de error
+            raise Exception(
+                "No se encuentran registros para las fechas proporcionadas."
+            )
+
         # print(f'Promedio total: {promedio_total}')
 
         # Consulta SQL para obtener la cantidad de valores con parámetros
@@ -515,6 +554,13 @@ def por_dependencia_fechas():
         cantidad_valores = cursor.fetchall()
 
         cantidad_valores = cantidad_valores[0]
+
+        if cantidad_valores is None:
+            # Si el resultado es None, mostrar un mensaje de error
+            raise Exception(
+                "No se encuentran registros para las fechas proporcionadas."
+            )
+
         # print(cantidad_valores)
 
         connection.close()
@@ -569,17 +615,30 @@ def consultar_datos_por_dependencia_fecha(
 @app.route("/actualizar", methods=["POST"])
 def actualizar():
     try:
+        # Establecer conexión a la base de datos
         connection = conectar_base_datos()
         cursor = connection.cursor()
+
+        # Obtener la ruta completa del archivo JSON
+        json_path = os.path.join(
+            script_dir, "JSON/api-encuesta-conosolas-0e96bc3cd058.json"
+        )
+
+        # Verificar la existencia del archivo
+        if os.path.exists(json_path):
+            print(f"El archivo JSON existe en {json_path}")
+        else:
+            print(
+                f"Error: El archivo JSON no existe en la ruta especificada: {json_path}"
+            )
+            return render_template("error.html", error="Archivo JSON no encontrado")
 
         # Cargar credenciales del archivo JSON descargado
         scope = [
             "https://spreadsheets.google.com/feeds",
             "https://www.googleapis.com/auth/drive",
         ]
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(
-            "JSON/api-encuesta-conosolas-0e96bc3cd058.json", scope
-        )
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(json_path, scope)
         client = gspread.authorize(credentials)
 
         # Abrir la hoja de cálculo por su URL
@@ -595,16 +654,17 @@ def actualizar():
         # Imprimir los datos
         # print(data)
 
-        query = f"TRUNCATE `encuestas_consolas`.`informe`"
-        cursor.execute(query)
+        # Truncar la tabla antes de insertar nuevos datos
+        query_truncate = "TRUNCATE TABLE `encuestas_consolas`.`informe`"
+        cursor.execute(query_truncate)
 
         # Iterar sobre los datos y almacenarlos en la base de datos
         for row in data[1:]:
-            # Suponiendo que tu hoja de cálculo tiene columnas: FECHA, AMABIILIDAD, EFECTIVIDAD, DEPENDENCIA, ...
-            query = "INSERT INTO informe (FECHA, AMABILIDAD, PUNTUALIDAD, EFECTIVIDAD, DEPENDENCIA) VALUES (%s, %s, %s, %s, %s)"
-            cursor.execute(query, (row[0], row[1], row[2], row[3], row[4]))
+            # Suponiendo que tu hoja de cálculo tiene columnas: FECHA, AMABILIDAD, PUNTUALIDAD, EFECTIVIDAD, DEPENDENCIA, ...
+            query_insert = "INSERT INTO informe (FECHA, AMABILIDAD, PUNTUALIDAD, EFECTIVIDAD, DEPENDENCIA) VALUES (%s, %s, %s, %s, %s)"
+            cursor.execute(query_insert, (row[0], row[1], row[2], row[3], row[4]))
 
-        # Commit y cerrar la conexión
+        # Commit para aplicar los cambios en la base de datos
         connection.commit()
 
         return render_template("actualizado.html")
@@ -615,7 +675,7 @@ def actualizar():
     finally:
         # Cerrar la conexión en el bloque finally para asegurarse de que siempre se cierre, incluso si hay una excepción.
         connection.close()
-        
+
 
 # ------------------------------------------------------------------------------------------RUTA PARA GENERAR EXCEL---------------------------------------------------------------------------------------------------
 
@@ -716,7 +776,6 @@ def exportar_excel():
         # Crea un DataFrame de pandas
         df = pd.DataFrame(data)
 
-
         # Convert the data to a pandas DataFrame
         df_additional = pd.DataFrame(
             resultados,
@@ -727,9 +786,9 @@ def exportar_excel():
                 "PUNTUALIDAD",
                 "EFECTIVIDAD",
                 "DEPENDENCIA",
-            ]
+            ],
         )
-        
+
         # Convert the data to a pandas DataFrame
         df_additional_promedio = pd.DataFrame([promedio_total], columns=["NOTA FINAL"])
 
@@ -745,7 +804,9 @@ def exportar_excel():
         with pd.ExcelWriter(excel_data_combined, engine="openpyxl") as writer:
             df_additional.to_excel(writer, index=False, sheet_name="REGISTROS")
             df.to_excel(writer, index=False, sheet_name="RESULTADOS")
-            df_additional_promedio.to_excel(writer, index=False, sheet_name="NOTA FINAL")
+            df_additional_promedio.to_excel(
+                writer, index=False, sheet_name="NOTA FINAL"
+            )
 
         # Retorna el archivo Excel combinado como respuesta
         excel_data_combined.seek(0)
@@ -774,3 +835,4 @@ def page_not_found(error):
 
 if __name__ == "__main__":
     app.run(debug=True)
+    app.static_folder = "informe_consolas/static"
